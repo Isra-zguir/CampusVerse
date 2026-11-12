@@ -1,0 +1,54 @@
+<h1>Incident statistics</h1>
+
+@if (error()) {
+  <div class="alert error">{{ error() }}</div>
+}
+
+@if (stats(); as s) {
+  <div class="stats">
+    <div class="card">
+      <div class="muted">Total incidents</div>
+      <p class="stat-value">{{ s.totalIncidents }}</p>
+    </div>
+    <div class="card">
+      <div class="muted">Open</div>
+      <p class="stat-value">{{ s.openIncidents }}</p>
+    </div>
+    <div class="card">
+      <div class="muted">Resolved</div>
+      <p class="stat-value">{{ s.resolvedIncidents }}</p>
+    </div>
+    <div class="card">
+      <div class="muted">Completed interventions</div>
+      <p class="stat-value">{{ s.completedInterventions }}</p>
+    </div>
+    <div class="card">
+      <div class="muted">Average resolution (hours)</div>
+      <p class="stat-value">{{ s.averageResolutionHours ?? '—' }}</p>
+    </div>
+  </div>
+
+  <h2>By category</h2>
+  <div class="card">
+    <table>
+      <tbody>
+        @for (row of entries(s.byCategory); track row[0]) {
+          <tr><td>{{ row[0] }}</td><td>{{ row[1] }}</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h2>By priority</h2>
+  <div class="card">
+    <table>
+      <tbody>
+        @for (row of entries(s.byPriority); track row[0]) {
+          <tr><td>{{ row[0] }}</td><td>{{ row[1] }}</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else if (!error()) {
+  <p class="muted">Loading statistics…</p>
+}

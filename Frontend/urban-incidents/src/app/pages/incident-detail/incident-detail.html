@@ -1,0 +1,115 @@
+<a routerLink="/" class="back">← All incidents</a>
+
+@if (error()) {
+  <div class="alert error">{{ error() }}</div>
+}
+@if (message()) {
+  <div class="alert success">{{ message() }}</div>
+}
+
+@if (incident(); as i) {
+  <div class="card">
+    <div class="row">
+      <span class="badge">{{ i.category }}</span>
+      <span class="badge" [class]="i.priority">{{ i.priority }}</span>
+      <span class="badge" [class]="i.status">{{ i.status }}</span>
+      <span class="spacer"></span>
+      @if (canEdit()) {
+        <a class="btn outline small" [routerLink]="['/', i.id, 'edit']">Edit</a>
+        <button class="btn danger small" (click)="deleteIncident()" [disabled]="busy()">Delete</button>
+      }
+    </div>
+
+    <h1>{{ i.title }}</h1>
+    @if (i.description) {
+      <p>{{ i.description }}</p>
+    }
+
+    <dl class="facts">
+      <div><dt>Location</dt><dd>{{ i.location }}</dd></div>
+      <div><dt>Neighborhood</dt><dd>{{ i.neighborhood ?? '—' }}</dd></div>
+      <div><dt>Reporter ID</dt><dd>{{ i.reporterId }}</dd></div>
+      <div><dt>Reported</dt><dd>{{ i.createdAt | date: 'd MMM y, HH:mm' }}</dd></div>
+      <div><dt>Resolved</dt><dd>{{ i.resolvedAt ? (i.resolvedAt | date: 'd MMM y, HH:mm') : '—' }}</dd></div>
+    </dl>
+
+    @if (i.extraInfoRequest) {
+      <p class="alert error">More information requested: {{ i.extraInfoRequest }}</p>
+    }
+    @if (i.rejectionReason) {
+      <p class="alert error">Rejected: {{ i.rejectionReason }}</p>
+    }
+
+    <div class="row" style="margin-top: 1rem;">
+      @if (canValidate()) {
+        <button class="btn small" (click)="validate()" [disabled]="busy()">Validate</button>
+      }
+      @if (i.status === 'RESOLVED') {
+        <button class="btn small" (click)="close()" [disabled]="busy()">Confirm resolution</button>
+      }
+      <button class="btn outline small" (click)="classify()" [disabled]="busy()">AI classify</button>
+      <button class="btn outline small" (click)="prioritize()" [disabled]="busy()">AI priority</button>
+    </div>
+
+    @if (canValidate()) {
+      <div class="row" style="margin-top: 0.75rem;">
+        <input [(ngModel)]="reason" placeholder="Reason for reject / extra info" />
+        <button class="btn outline small" (click)="requestInfo()" [disabled]="busy()">Request info</button>
+        <button class="btn danger small" (click)="reject()" [disabled]="busy()">Reject</button>
+      </div>
+    }
+  </div>
+
+  <h2>Interventions</h2>
+
+  @if (canWorkOrder()) {
+    <form class="card form-grid" (ngSubmit)="createWorkOrder()">
+      <div>
+        <label for="technicianId">Technician ID *</label>
+        <input id="technicianId" type="number" min="1" [(ngModel)]="technicianId" name="technicianId" />
+      </div>
+      <div>
+        <label for="scheduledDate">Planned date</label>
+        <input id="scheduledDate" type="date" [(ngModel)]="scheduledDate" name="scheduledDate" />
+      </div>
+      <div class="full">
+        <label for="notes">Notes</label>
+        <input id="notes" [(ngModel)]="notes" name="notes" />
+      </div>
+      <div>
+        <button class="btn" type="submit" [disabled]="busy()">Create work order</button>
+      </div>
+    </form>
+  }
+
+  @if (interventions().length === 0) {
+    <p class="muted">No work order yet.</p>
+  } @else {
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Technician</th><th>Date</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+          @for (w of interventions(); track w.id) {
+            <tr>
+              <td>{{ w.technicianId }}</td>
+              <td>{{ w.scheduledDate || '—' }}</td>
+              <td><span class="badge" [class]="w.status">{{ w.status }}</span></td>
+              <td>
+                @if (w.status === 'PENDING') {
+                  <button class="btn outline small" (click)="setInterventionStatus(w, 'IN_PROGRESS')" [disabled]="busy()">Start</button>
+                }
+                @if (w.status === 'IN_PROGRESS') {
+                  <button class="btn small" (click)="setInterventionStatus(w, 'COMPLETED')" [disabled]="busy()">Complete</button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+} @else if (!error()) {
+  <p class="muted">Loading…</p>
+}

@@ -1,0 +1,65 @@
+<div class="row">
+  <h1>Urban incidents</h1>
+  <span class="spacer"></span>
+  <a class="btn" routerLink="/new">+ Report an incident</a>
+</div>
+
+<div class="card filters row">
+  <div>
+    <label for="category">Category</label>
+    <select id="category" [(ngModel)]="filters.category" (change)="load()">
+      <option value="">All</option>
+      @for (c of categories; track c) {
+        <option [value]="c">{{ c }}</option>
+      }
+    </select>
+  </div>
+  <div>
+    <label for="status">Status</label>
+    <select id="status" [(ngModel)]="filters.status" (change)="load()">
+      <option value="">All</option>
+      @for (s of statuses; track s) {
+        <option [value]="s">{{ s }}</option>
+      }
+    </select>
+  </div>
+  <div>
+    <label for="priority">Priority</label>
+    <select id="priority" [(ngModel)]="filters.priority" (change)="load()">
+      <option value="">All</option>
+      @for (p of priorities; track p) {
+        <option [value]="p">{{ p }}</option>
+      }
+    </select>
+  </div>
+  <button class="btn outline small" (click)="resetFilters()">Reset</button>
+</div>
+
+@if (error()) {
+  <div class="alert error">{{ error() }}</div>
+}
+
+@if (loading()) {
+  <p class="muted">Loading incidents…</p>
+} @else if (incidents().length === 0 && !error()) {
+  <div class="card empty">
+    <p>No incidents found.</p>
+    <a class="btn" routerLink="/new">Report the first incident</a>
+  </div>
+} @else {
+  <div class="grid">
+    @for (incident of incidents(); track incident.id) {
+      <a class="card incident-card" [routerLink]="['/', incident.id]">
+        <div class="row">
+          <span class="badge">{{ incident.category }}</span>
+          <span class="badge" [class]="incident.priority">{{ incident.priority }}</span>
+          <span class="spacer"></span>
+          <span class="badge" [class]="incident.status">{{ incident.status }}</span>
+        </div>
+        <h2>{{ incident.title }}</h2>
+        <p class="muted">{{ incident.location }}</p>
+        <p class="muted">{{ incident.createdAt | date: 'd MMM y, HH:mm' }}</p>
+      </a>
+    }
+  </div>
+}

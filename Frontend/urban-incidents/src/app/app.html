@@ -1,0 +1,12 @@
+<header class="topbar">
+  <a routerLink="/" class="brand">Smart City · Incidents</a>
+  <nav>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Incidents</a>
+    <a routerLink="/new" routerLinkActive="active">Report</a>
+    <a routerLink="/statistics" routerLinkActive="active">Statistics</a>
+  </nav>
+</header>
+
+<main class="container">
+  <router-outlet />
+</main>

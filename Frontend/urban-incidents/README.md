@@ -1,6 +1,6 @@
 # Urban Incidents (Angular)
 
-Frontend for the **Urban Incident & Maintenance Management** microservice.
+Frontend skeleton for the **Urban Incident & Maintenance Management** microservice.
 
 ## Run
 
@@ -12,5 +12,5 @@ npm install
 npm start
 ```
 
-The app starts on http://localhost:4201. Start the backend first (`Backend/urban-incident-service`, port 8082).  
-`/api` is proxied to the Spring Boot service (no CORS issue in development).
+The app starts on http://localhost:4201. Start the backend first (`Backend/urban-incident-service`, port 8082).
+`/api` is proxied to the Spring Boot service.

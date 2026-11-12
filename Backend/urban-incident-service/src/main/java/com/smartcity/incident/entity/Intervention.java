@@ -1,10 +1,8 @@
 package com.smartcity.incident.entity;
 
-import com.smartcity.incident.enums.InterventionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -20,36 +18,16 @@ public class Intervention {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "incident_id", nullable = false)
-    private Incident incident;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private String workDescription;
+    private String result;
 
-    @Column(nullable = false)
-    private Long technicianId;
+    @ManyToOne
+    @JoinColumn(name = "work_order_id")
+    private WorkOrder workOrder;
 
-    private LocalDate scheduledDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
-    @Builder.Default
-    private InterventionStatus status = InterventionStatus.PENDING;
-
-    @Column(length = 1000)
-    private String notes;
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = createdAt;
-    }
-
-    @PreUpdate
-    void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    @ManyToOne
+    @JoinColumn(name = "technician_id")
+    private Technician technician;
 }

@@ -4,8 +4,7 @@ public enum IncidentCategory {
     POTHOLE,
     STREETLIGHT,
     WATER_LEAK,
-    GRAFFITI,
-    WASTE,
     ROAD_DAMAGE,
+    WASTE,
     OTHER
 }

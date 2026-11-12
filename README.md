@@ -14,7 +14,7 @@ Through a **microservices architecture** and smart features, it aims to create a
 
 | Member | Role |
 |--------|------|
-| Sarah Guesmi | Team member |
+| Sarah Guesmi | Urban Incident & Maintenance Management |
 | Nour Ammar | Team member |
 | Eya Hwess | Team member |
 | Eya Abdellaoui | Team member |
@@ -27,7 +27,7 @@ Task tracking is done with **GitHub Issues / Projects** on this repository, toge
 
 ## Architecture
 
-Each microservice owns its own database (database-per-service) and exposes a REST API. Frontends consume those APIs.
+Each microservice owns its own database (database-per-service) and exposes a REST API. Angular frontends consume those APIs.
 
 ```
 Citizens / Municipal agents
@@ -44,32 +44,71 @@ Citizens / Municipal agents
 
 ### Microservices
 
-| # | Microservice | Folder | Tech | Port |
-|---|--------------|--------|------|------|
-| 1 | Citizen & Civic Participation | `Backend/citizen-participation-service` | Spring Boot | TBD |
-| 2 | **Urban Incident & Maintenance Management** | `Backend/urban-incident-service` | Spring Boot · Java 21 · H2 | **8082** |
-| 3 | Smart Mobility & Traffic | `Backend/smart-mobility-service` | Spring Boot | TBD |
-| 4 | EcoCity & Environmental Monitoring | `Backend/ecocity-service` | Spring Boot | TBD |
-| 5 | Digital Municipal Services | `Backend/municipal-services-service` | Spring Boot | TBD |
-| 6 | Smart Places & Public Facilities | `Backend/smart-places-service` | Spring Boot | TBD |
-| 7 | ReLink AI — Intelligent Lost & Found | `Backend/relink-ai-service` | Spring Boot + AI | TBD |
+| # | Microservice | Backend folder | Frontend folder | Tech |
+|---|--------------|----------------|-----------------|------|
+| 1 | Citizen & Civic Participation | `Backend/citizen-participation-service` | `Frontend/citizen-participation` | Spring Boot · Angular |
+| 2 | **Urban Incident & Maintenance Management** | `Backend/urban-incident-service` | `Frontend/urban-incidents` | Spring Boot · Java 21 · H2 · Angular · **port 8082** |
+| 3 | Smart Mobility & Traffic | `Backend/smart-mobility-service` | `Frontend/smart-mobility` | Spring Boot · Angular |
+| 4 | EcoCity & Environmental Monitoring | `Backend/ecocity-service` | `Frontend/ecocity` | Spring Boot · Angular |
+| 5 | Digital Municipal Services | `Backend/municipal-services-service` | `Frontend/municipal-services` | Spring Boot · Angular |
+| 6 | Smart Places & Public Facilities | `Backend/smart-places-service` | `Frontend/smart-places` | Spring Boot · Angular |
+| 7 | ReLink AI — Intelligent Lost & Found | `Backend/relink-ai-service` | `Frontend/relink-ai` | Spring Boot + AI · Angular |
 
-The existing Events project (`Backend/event-service`, `Frontend/campusverse-web`) remains in the repository and is not modified by this work.
+### 1. Citizen & Civic Participation
 
-### Urban Incident & Maintenance — features
+- Citizen profile management
+- Neighborhood information
+- Citizen proposals and public consultations
+- Voting, comments and feedback
+- Participation history and statistics
 
-- Report an incident (description, location, photo URL)
-- Categorize incidents (AI-assisted keyword classifier)
-- Validate, reject or request additional information
-- Prioritize (low / medium / high / critical), with an AI-assisted suggestion
-- Create work orders, assign a technician, schedule a date
-- Track intervention progress (pending, in progress, completed)
-- Confirm resolution and close the incident
-- Statistics: counts, average resolution time, completed interventions
+### 2. Urban Incident & Maintenance Management *(this branch)*
+
+- Report an incident (photos, description, location)
+- Incident categorization (AI can assist)
+- Validation: accept, reject or request more information
+- Prioritization: low / medium / high / critical (AI can assist)
+- Work orders, technician assignment and scheduling
+- Intervention progress tracking
+- Resolution confirmation
+- Notifications when the incident status changes
+- Statistics: number of incidents, average resolution time, completed interventions
+
+**UML entities:** Technician, Incident, WorkOrder, Intervention, ResolutionConfirmation, Notification.
+
+### 3. Smart Mobility & Traffic
+
+- Traffic monitoring and road closure management
+- Parking availability and reservations
+- Alternative routes and mobility statistics
+
+### 4. EcoCity & Environmental Monitoring
+
+- Monitoring stations, air quality and noise
+- Thresholds, pollution alerts, dashboards and reports
+
+### 5. Digital Municipal Services
+
+- Service catalog, online requests, document upload
+- Validation, appointments, notifications and statistics
+
+### 6. Smart Places & Public Facilities
+
+- Facility management, availability and reservations
+- Community activities, reviews and occupancy statistics
+
+### 7. ReLink AI — Intelligent Lost & Found
+
+Municipal service that helps citizens recover lost items or missing animals.
+
+- Lost / found item reporting
+- AI smart matching (image analysis and semantic similarity)
+- Match confidence, notifications, ownership verification
+- Secure return management and reunification statistics
 
 ---
 
-## Repository structure (imposed)
+## Repository structure (required)
 
 ```
 Backend/                              one Spring Boot project per microservice
@@ -100,19 +139,11 @@ The API starts on **http://localhost:8082**
 | Check | URL |
 |-------|-----|
 | Health | http://localhost:8082/api/incidents/health |
-| List incidents | http://localhost:8082/api/incidents |
-| Statistics | http://localhost:8082/api/incidents/statistics |
 | H2 console | http://localhost:8082/h2-console (`jdbc:h2:mem:incidents_db`) |
 
-The service uses an **in-memory H2** database so it compiles and **starts without extra setup**.
+The service uses an **in-memory H2** database so it **compiles and starts without extra setup**.
 
-Example report:
-
-```bash
-curl -X POST http://localhost:8082/api/incidents ^
-  -H "Content-Type: application/json" ^
-  -d "{\"title\":\"Broken streetlight\",\"description\":\"Lamp is off at night\",\"location\":\"Avenue Habib Bourguiba\",\"neighborhood\":\"Centre\",\"category\":\"STREETLIGHT\",\"reporterId\":1}"
-```
+This branch contains the **project skeleton** (packages, UML entities, empty services/controllers). REST endpoints will be implemented later.
 
 ### Frontend (Angular)
 
@@ -131,7 +162,7 @@ Open **http://localhost:4201**. `/api` is proxied to the backend on port 8082.
 ## How to contribute
 
 1. Clone: `git clone https://github.com/Isra-zguir/CampusVerse.git`
-2. Create a branch for your microservice (example: `feature/urban-incident-service`)
+2. Create a branch for your microservice (example: `urban_incident_sarah`)
 3. Work only in your folders to avoid conflicts
 4. `git add` → `git commit` → `git push`
 5. Open a pull request toward `main`
